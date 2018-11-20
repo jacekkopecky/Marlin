@@ -1731,6 +1731,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       END_MENU();
     }
 
+/*
     void lcd_preheat_m2_menu() {
       START_MENU();
       MENU_BACK(MSG_PREPARE);
@@ -1782,6 +1783,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       #endif
       END_MENU();
     }
+    */
 
   #endif // HAS_TEMP_HOTEND || HAS_HEATED_BED
 
@@ -2676,6 +2678,11 @@ void lcd_quick_feedback(const bool clear_buttons) {
     #endif
 
     //
+    // Disable Steppers
+    //
+    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+
+    //
     // TMC Z Calibration
     //
     #if ENABLED(TMC_Z_CALIBRATION)
@@ -2724,11 +2731,6 @@ void lcd_quick_feedback(const bool clear_buttons) {
     #endif
 
     //
-    // Disable Steppers
-    //
-    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
-
-    //
     // Change filament
     //
     #if ENABLED(ADVANCED_PAUSE_FEATURE)
@@ -2761,10 +2763,10 @@ void lcd_quick_feedback(const bool clear_buttons) {
       //
       #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_3 != 0 || TEMP_SENSOR_4 != 0 || HAS_HEATED_BED
         MENU_ITEM(submenu, MSG_PREHEAT_1, lcd_preheat_m1_menu);
-        MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
+        // MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
       #else
         MENU_ITEM(function, MSG_PREHEAT_1, lcd_preheat_m1_e0_only);
-        MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
+        // MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
       #endif
 
     #endif // HAS_TEMP_HOTEND
@@ -3585,7 +3587,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       //
       // Preheat Material 2 conf
       //
-      MENU_ITEM(submenu, MSG_PREHEAT_2_SETTINGS, lcd_control_temperature_preheat_material2_settings_menu);
+      //MENU_ITEM(submenu, MSG_PREHEAT_2_SETTINGS, lcd_control_temperature_preheat_material2_settings_menu);
     #endif
 
     END_MENU();
@@ -4329,7 +4331,7 @@ void lcd_quick_feedback(const bool clear_buttons) {
       if (LCD_HEIGHT >= 4) STATIC_ITEM_P(change_filament_header(mode), true, true);
       MENU_BACK(MSG_FILAMENTCHANGE);
       MENU_ITEM(submenu, MSG_PREHEAT_1, _lcd_change_filament_temp_1_menu);
-      MENU_ITEM(submenu, MSG_PREHEAT_2, _lcd_change_filament_temp_2_menu);
+      //MENU_ITEM(submenu, MSG_PREHEAT_2, _lcd_change_filament_temp_2_menu);
       END_MENU();
     }
     void lcd_temp_menu_e0_filament_change()  { _lcd_temp_menu_filament_op(ADVANCED_PAUSE_MODE_PAUSE_PRINT, 0); }
