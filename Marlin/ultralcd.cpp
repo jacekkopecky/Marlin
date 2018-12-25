@@ -2659,13 +2659,30 @@ void lcd_quick_feedback(const bool clear_buttons) {
     //
     MENU_BACK(MSG_MAIN);
 
-    //
-    // Move Axis
-    //
-    #if ENABLED(DELTA)
-      if (all_axes_homed())
-    #endif
-        MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
+    #if HAS_TEMP_HOTEND
+
+      //
+      // Cooldown
+      //
+      bool has_heat = false;
+      HOTEND_LOOP() if (thermalManager.target_temperature[HOTEND_INDEX]) { has_heat = true; break; }
+      #if HAS_HEATED_BED
+        if (thermalManager.target_temperature_bed) has_heat = true;
+      #endif
+      if (has_heat) MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
+
+      //
+      // Preheat for Material 1 and 2
+      //
+      #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_3 != 0 || TEMP_SENSOR_4 != 0 || HAS_HEATED_BED
+        MENU_ITEM(submenu, MSG_PREHEAT_1, lcd_preheat_m1_menu);
+        // MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
+      #else
+        MENU_ITEM(function, MSG_PREHEAT_1, lcd_preheat_m1_e0_only);
+        // MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
+      #endif
+
+    #endif // HAS_TEMP_HOTEND
 
     //
     // Auto Home
@@ -2723,6 +2740,14 @@ void lcd_quick_feedback(const bool clear_buttons) {
         MENU_ITEM(function, MSG_LEVEL_CORNERS, _lcd_level_bed_corners);
     #endif
 
+    //
+    // Move Axis
+    //
+    #if ENABLED(DELTA)
+      if (all_axes_homed())
+    #endif
+        MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
+
     #if HAS_M206_COMMAND && DISABLED(SLIM_LCD_MENUS)
       //
       // Set Home Offsets
@@ -2745,31 +2770,6 @@ void lcd_quick_feedback(const bool clear_buttons) {
         #endif
       }
     #endif // ADVANCED_PAUSE_FEATURE
-
-    #if HAS_TEMP_HOTEND
-
-      //
-      // Cooldown
-      //
-      bool has_heat = false;
-      HOTEND_LOOP() if (thermalManager.target_temperature[HOTEND_INDEX]) { has_heat = true; break; }
-      #if HAS_HEATED_BED
-        if (thermalManager.target_temperature_bed) has_heat = true;
-      #endif
-      if (has_heat) MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
-
-      //
-      // Preheat for Material 1 and 2
-      //
-      #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_3 != 0 || TEMP_SENSOR_4 != 0 || HAS_HEATED_BED
-        MENU_ITEM(submenu, MSG_PREHEAT_1, lcd_preheat_m1_menu);
-        // MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
-      #else
-        MENU_ITEM(function, MSG_PREHEAT_1, lcd_preheat_m1_e0_only);
-        // MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
-      #endif
-
-    #endif // HAS_TEMP_HOTEND
 
     //
     // BLTouch Self-Test and Reset
